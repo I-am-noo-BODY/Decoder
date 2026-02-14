@@ -1,118 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Password Strength Simulator</title>
-
-<!-- ICON -->
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="icon" type="image/png" href="icon.png">
-
-<style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family: monospace;
-}
-
-body{
-    background:#0d0d0d;
-    color:#00ff99;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-}
-
-header{
-    padding:15px;
-    text-align:center;
-    font-size:22px;
-    border-bottom:1px solid #00ff99;
-}
-
-.menu{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-    padding:20px;
-}
-
-button{
-    padding:15px;
-    font-size:16px;
-    background:black;
-    color:#00ff99;
-    border:2px solid #00ff99;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#003322;
-}
-
-.container{
-    display:none;
-    flex-direction:column;
-    padding:20px;
-    gap:15px;
-    flex:1;
-}
-
-input{
-    padding:10px;
-    font-size:16px;
-    background:black;
-    color:#00ff99;
-    border:2px solid #00ff99;
-}
-
-.result{
-    border:2px solid #00ff99;
-    padding:15px;
-    height:200px;
-    overflow-y:auto;
-    font-size:16px;
-    white-space:pre-wrap;
-}
-
-.lang-btn{
-    position:absolute;
-    top:10px;
-    right:10px;
-}
-</style>
-</head>
-
-<body>
-
-<header id="title">Password Strength Simulator</header>
-
-<button class="lang-btn" onclick="toggleLang()">🌍</button>
-
-<div class="menu" id="mainMenu">
-    <button onclick="openDecoder('numeric')">Numeric Only</button>
-    <button onclick="openDecoder('alpha')">Alphabetical</button>
-    <button onclick="openDecoder('symbol')">Symbols Only</button>
-    <button onclick="openDecoder('mixed')">Mixed</button>
-</div>
-
-<div class="container" id="decoder">
-
-<input id="password" placeholder="Enter password">
-<input id="speed" type="number" placeholder="Guesses per second">
-
-<div style="display:flex; gap:10px;">
-<button onclick="calculate()">Calculate</button>
-<button onclick="resetFields()">Reset</button>
-<button onclick="goBack()">Back</button>
-</div>
-
-<div class="result" id="result"></div>
-
-</div>
-
 <script>
 
 let currentType = "";
@@ -121,44 +6,49 @@ let language = "en";
 const translations = {
     en: {
         title:"Password Strength Simulator",
-        password:"Enter password",
-        speed:"Guesses per second",
-        result:"Total combinations: ",
-        time:"Estimated time: ",
         numeric:"Numeric Only",
         alpha:"Alphabetical",
         symbol:"Symbols Only",
-        mixed:"Mixed"
+        mixed:"Mixed",
+        password:"Enter password",
+        speed:"Guesses per second",
+        calculate:"Calculate",
+        reset:"Reset",
+        back:"Back",
+        total:"Total combinations:",
+        time:"Estimated time:"
     },
     zh: {
         title:"密码强度模拟器",
-        password:"输入密码",
-        speed:"每秒猜测次数",
-        result:"总组合数: ",
-        time:"预计时间: ",
         numeric:"仅数字",
         alpha:"仅字母",
         symbol:"仅符号",
-        mixed:"混合"
+        mixed:"混合",
+        password:"输入密码",
+        speed:"每秒猜测次数",
+        calculate:"计算",
+        reset:"重置",
+        back:"返回",
+        total:"总组合数:",
+        time:"预计时间:"
     }
 };
 
-function toggleLang(){
-    language = language === "en" ? "zh" : "en";
-    applyLang();
+function applyLanguage() {
+    document.querySelectorAll("[data-key]").forEach(el => {
+        const key = el.getAttribute("data-key");
+        if (translations[language][key]) {
+            el.innerText = translations[language][key];
+        }
+    });
+
+    document.getElementById("password").placeholder = translations[language].password;
+    document.getElementById("speed").placeholder = translations[language].speed;
 }
 
-function applyLang(){
-    const t = translations[language];
-    document.getElementById("title").innerText = t.title;
-    document.getElementById("password").placeholder = t.password;
-    document.getElementById("speed").placeholder = t.speed;
-
-    const buttons = document.querySelectorAll("#mainMenu button");
-    buttons[0].innerText = t.numeric;
-    buttons[1].innerText = t.alpha;
-    buttons[2].innerText = t.symbol;
-    buttons[3].innerText = t.mixed;
+function toggleLang(){
+    language = language === "en" ? "zh" : "en";
+    applyLanguage();
 }
 
 function openDecoder(type){
@@ -210,16 +100,11 @@ function calculate(){
     const combinations = Math.pow(charset,length);
     const seconds = combinations/speed;
 
-    const t = translations[language];
-
     document.getElementById("result").innerText =
-        t.result + combinations.toLocaleString() + "\n\n" +
-        t.time + seconds.toLocaleString() + " seconds";
+        translations[language].total + " " + combinations.toLocaleString() + "\n\n" +
+        translations[language].time + " " + seconds.toLocaleString() + " s";
 }
 
-applyLang();
+applyLanguage();
 
 </script>
-
-</body>
-</html>
